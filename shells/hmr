@@ -1,0 +1,2 @@
+#!/bin/bash
+python3 -c "import importlib;mod=importlib.import_module('bootstrap');mod.main()" $@
