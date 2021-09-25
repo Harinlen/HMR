@@ -1,5 +1,5 @@
 #!/bin/bash
 SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
-SCRIPT_DIR="$(realpath "${SCRIPT_DIR}")"
+SCRIPT_DIR="$(readlink -f "${SCRIPT_DIR}")"
 BOOTSTRAP_PATH="$SCRIPT_DIR/bootstrap.py"
 python3 $BOOTSTRAP_PATH $@
