@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(filter)
+project(correction)
 
 # Options
 set(CMAKE_BUILD_TYPE "Release")
@@ -11,20 +11,16 @@ set(CMAKE_CXX_STANDARD 11)
 include_directories(../libs/)
 
 # Binaries
-add_executable(filter
-    src/main.cpp
-    src/arguments.cpp
-    src/bam_filter.cpp
-    src/compose_reduced.cpp
-    src/enzyme.cpp
-    src/hp_fasta_search.cpp
-    ../libs/hp_unzip.cpp
-    ../libs/hp_zip.cpp
-    ../libs/hp_zip_crc32.cpp
-    ../libs/ui_utils.cpp
+add_executable(correction
     ../libs/hp_bam_parser.cpp
     ../libs/hp_bgzf_parser.cpp
     ../libs/hp_bgzf_queue.cpp
     ../libs/hp_file_map.cpp
+    ../libs/hp_unzip.cpp
+    ../libs/ui_utils.cpp
+    src/arguments.cpp
+    src/bam_correction.cpp
+    src/hp_fasta_parser.cpp
+    src/main.cpp
 )
-target_link_libraries(filter pthread)
+target_link_libraries(correction pthread)
