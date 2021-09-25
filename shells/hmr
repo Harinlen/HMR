@@ -1,2 +1,5 @@
 #!/bin/bash
-python3 -c "import importlib;mod=importlib.import_module('bootstrap');mod.main()" $@
+SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(realpath "${SCRIPT_DIR}")"
+BOOTSTRAP_PATH="$SCRIPT_DIR/bootstrap.py"
+python3 $BOOTSTRAP_PATH $@
