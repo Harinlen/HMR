@@ -25,6 +25,7 @@ def deploy_cpp_to():
 
 def main():
     args = parse_arguments()
+    args.path = os.path.abspath(args.path)
     # Check the directory name is hmr or not.
     if os.path.basename(args.path) != 'hmr':
         args.path = os.path.join(args.path, 'hmr')
