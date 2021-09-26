@@ -5,6 +5,13 @@ import sys
 import shutil
 import stat
 
+BOOTLOADER_SHELL = """
+#!/bin/bash
+SCRIPT_DIR={}
+BOOTSTRAP_PATH="$SCRIPT_DIR/bootstrap.py"
+python3 $BOOTSTRAP_PATH $@
+"""
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='HMR Correction')
@@ -27,18 +34,13 @@ def main():
     src_root_path = os.path.dirname(os.path.dirname(__file__))
     # Deploy the python files.
     shutil.copytree(os.path.join(src_root_path, 'py'), args.path, dirs_exist_ok=True)
-    # Copy the bash file.
-    shell_path = os.path.join(src_root_path, 'shells')
-    for filename in os.listdir(shell_path):
-        filepath = os.path.join(shell_path, filename)
-        if not os.path.isfile(filepath):
-            continue
-        target_path = os.path.join(args.path, filename)
-        shutil.copyfile(filepath, target_path)
-        # Change mode.
-        os.chmod(target_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IROTH | stat.S_IXOTH)
+    # Generate the python caller shell.
+    target_path = os.path.join(args.path, 'hmr')
+    with open(target_path, 'w') as shell_f:
+        shell_f.write(BOOTLOADER_SHELL.format(args.path))
+    # Change mode.
+    os.chmod(target_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IROTH | stat.S_IXOTH)
     # Use cmake to compile and deploy the C++ codes.
-
 
 
 if __name__ == '__main__':
