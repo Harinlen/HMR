@@ -60,7 +60,6 @@ def main():
     module_name = module_list[0]
     # Try to load and execute the command.
     try:
-        print(module_name)
         mod_spec = importlib.util.spec_from_file_location('', os.path.join(os.path.dirname(__file__), module_name))
         module = importlib.util.module_from_spec(mod_spec)
         mod_spec.loader.exec_module(module)
