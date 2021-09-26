@@ -63,7 +63,7 @@ def hmr_main():
     time_print('Filtering the BAM file')
     # Use HMR filter to find the paired reads in BAM.
     ext.hmr_tool('filter', ['-m', sorted_bam_path, '-r', args.reference, '-o', args.output, '-e', args.enzyme,
-                            '-q', args.mapq, '-t', args.threads])
+                            '-q', str(args.mapq), '-t', str(args.threads)])
     # Remove the sorted.bam and tmp.ali
     time_print('Cleaning up the temporary files')
     pass

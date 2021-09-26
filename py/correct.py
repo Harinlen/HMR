@@ -70,6 +70,7 @@ def hmr_main():
                                 '-d', str(args.depletion), '-t', str(args.threads)])
     # Remove the sorted.bam and tmp.ali
     time_print('Cleaning up the temporary files')
+    # Remove the sorted.bam.
     pass
     time_print('Correction finished')
 
