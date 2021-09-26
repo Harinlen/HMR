@@ -6,6 +6,8 @@ build-*
 # --------
 *.dll
 *.exe
+cxx/filter/filter
+cxx/correction/correction
 
 # CMakes
 # ------
