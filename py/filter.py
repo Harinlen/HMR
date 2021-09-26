@@ -8,7 +8,7 @@ from ui_utils import *
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='HMR Correction')
+    parser = argparse.ArgumentParser(description='HMR Filter')
     parser.add_argument('-1', '--r1', dest='r1', type=str, required=True, help='R1 reads (.fastq.gz)')
     parser.add_argument('-2', '--r2', dest='r2', type=str, required=True, help='R2 reads (.fastq.gz)')
     parser.add_argument('-r', '--reference', dest='reference', type=str, required=True, help='Reference genome (.fasta)')

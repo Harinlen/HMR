@@ -6,7 +6,7 @@ import traceback
 import importlib.util
 
 hmr_mods = {
-    'correct': 'Based on the BAM file divided FASTA sequence into smaller pieces.',
+    'correct': 'Divided FASTA sequence into smaller parts.',
     'filter': 'Filter the BAM file.'
 }
 
@@ -60,7 +60,7 @@ def main():
     module_name = module_list[0]
     # Try to load and execute the command.
     try:
-        importlib.import_module('bootstrap')
+        print(module_name)
         mod_spec = importlib.util.spec_from_file_location('', os.path.join(os.path.dirname(__file__), module_name))
         module = importlib.util.module_from_spec(mod_spec)
         mod_spec.loader.exec_module(module)

@@ -66,8 +66,8 @@ def hmr_main():
     time_print('Correcting the sequence')
     # Use HMR correction to generate the corrected FASTA file.
     ext.hmr_tool('correction', ['-m', sorted_bam_path, '-r', args.reference, '-o', args.output,
-                                '-p', args.percent, '-s', args.sensitive, '-q', args.mapq, '-w', args.wide, '-n', args.narrow,
-                                '-d', args.depletion, '-t', args.threads])
+                                '-p', str(args.percent), '-s', str(args.sensitive), '-q', str(args.mapq), '-w', str(args.wide), '-n', str(args.narrow),
+                                '-d', str(args.depletion), '-t', str(args.threads)])
     # Remove the sorted.bam and tmp.ali
     time_print('Cleaning up the temporary files')
     pass
