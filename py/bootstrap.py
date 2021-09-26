@@ -54,7 +54,7 @@ def main():
         print_usage()
     # Load the module.
     bin_dir = os.path.dirname(__file__)
-    module_list = list(filter(lambda x: x.startswith(command), os.listdir(bin_dir)))
+    module_list = list(filter(lambda x: x.startswith(command) and x.endswith('.py'), os.listdir(bin_dir)))
     if len(module_list) == 0:
         module_load_err(command)
     module_name = module_list[0]
