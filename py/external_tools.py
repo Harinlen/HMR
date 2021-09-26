@@ -36,7 +36,7 @@ def standard_execution(exe_name: str, specify_arg: str, arguments: list, exe_pat
         exit(-1)
     # Use Popen to run the program.
     time_print('Running {} {}'.format(exe_name, ' '.join(str(x) for x in arguments)))
-    run_program(exe_path, arguments, block, stdin, stdout)
+    return run_program(exe_path, arguments, block, stdin, stdout)
 
 
 def bwa(arguments: list, exe_path: str = '', block: bool = False, stdin=None, stdout=None):
