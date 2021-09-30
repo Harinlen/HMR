@@ -37,7 +37,7 @@ void fasta_load_file(const char *file_path, FASTA_MAP *map)
     //Now just read the file line by line.
     char *line = NULL;
     size_t len = 0;
-    ssize_t line_size;
+    ssize_t line_size = 0;
     while((line_size = getline(&line, &len, fasta_file)) != -1)
     {
         //Trim the right of the string.

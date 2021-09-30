@@ -25,6 +25,7 @@ void bam_correct_n_ref(uint32_t n_ref, void *bam_correct)
     {
         correct->ref_names[i] = NULL;
     }
+    //Prepare the vector for aligns.
     correct->ref_aligns.resize(n_ref);
 }
 
@@ -110,8 +111,14 @@ inline void range_count(CONTIG_RANGE_DB &db, const POS_RANGE &range)
 
 long double roundoff(long double value, uint8_t prec)
 {
-    long double pow_10 = powf(10.0, static_cast<long double>(prec));
-    return roundf(value * pow_10) / pow_10;
+    long double pow_10 = 1;
+    while(prec--)
+    {
+        pow_10 *= 10.0;
+    }
+    value *= pow_10;
+    int64_t value_round = static_cast<int64_t>(value);
+    return static_cast<long double>(value_round) / pow_10;
 }
 
 long double calc_sat_level(const CONTIG_RANGE_DB &hic_db, long double pct)
@@ -132,14 +139,14 @@ long double calc_sat_level(const CONTIG_RANGE_DB &hic_db, long double pct)
         }
     }
     if(tmp_list.empty())
-        return -1;
+        return -1.0;
     if(tmp_list.size() == 1)
         return tmp_list[0];
     //Sort the list.
     std::sort(tmp_list.begin(), tmp_list.end());
     //Reset the first several values as NaN.
-    long double pos = static_cast<long double>(pct) * (tmp_list.size() + 1);
-    if(pos < 1)
+    long double pos = pct * (tmp_list.size() + 1.0);
+    if(pos < 1.0)
         return tmp_list[0];
     if(pos >= tmp_list.size())
         return tmp_list[tmp_list.size() - 1];
@@ -149,16 +156,21 @@ long double calc_sat_level(const CONTIG_RANGE_DB &hic_db, long double pct)
 }
 
 void get_score_db(const CONTIG_RANGE_DB &hic_db, int bin_size, int dep_size, float pct, float sens,
-                  POS_DB &score_db, float &thr)
+                  POS_DB &score_db, long double &thr)
 {
     if(hic_db.empty())
         return;
+    //Recast all the variables into long double to avoid state transfer.
+    long double f_bin_size = static_cast<long double>(bin_size),
+            f_dep_size = static_cast<long double>(dep_size),
+            f_pct = static_cast<long double>(pct),
+            f_sens = static_cast<long double>(sens);
     //Calculate the SAT level.
-    long double sat_level = roundoff(calc_sat_level(hic_db, pct), 5);
+    long double sat_level = roundoff(calc_sat_level(hic_db, f_pct), 5);
     if(sat_level < 0)
         return;
     //Calculate the threshold.
-    thr = sens*sat_level*0.5*dep_size/bin_size*(dep_size/bin_size-1);
+    thr = f_sens*sat_level*0.5*f_dep_size/f_bin_size*(f_dep_size/f_bin_size-1);
     //Compute the dep score.
     for(auto iter : hic_db)
     {
@@ -243,7 +255,7 @@ MISMATCH get_narrow_mismatch(const std::list<BAM_CORRECT_ALIGN> &ailgns)
         range_count(narrow_db, POS_RANGE{pos / narrow * narrow, next_pos / narrow * narrow});
     }
     POS_DB wide_score_db, narrow_score_db;
-    float wide_thr, narrow_thr;
+    long double wide_thr, narrow_thr;
     get_score_db(wide_db, wide, depletion, percent, sensitive, wide_score_db, wide_thr);
     get_score_db(narrow_db, narrow, wide, percent, sensitive, narrow_score_db, narrow_thr);
     //Calculate the wide mismatch.
@@ -348,7 +360,6 @@ MISMATCH get_narrow_mismatch(const std::list<BAM_CORRECT_ALIGN> &ailgns)
             std::vector<int> field;
             field.push_back(s);
             narrow_mismatch.push_back(field);
-            last_e = e;
         }
         else
         {

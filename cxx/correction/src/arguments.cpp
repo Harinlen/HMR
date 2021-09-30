@@ -33,23 +33,23 @@ void help_exit(char *prog_name)
         "optional arguments:\n"
         "  -h, --help            show this help message and exit\n"
         "  -m MAPPING, --mapping MAPPING\n"
-        "                        Input mapping file\n"
+        "                        Input mapping file (*.bam)\n"
         "  -r REFERENCE, --reference REFERENCE\n"
-        "                        Contig fasta file\n"
+        "                        Contig fasta file (*.fasta)\n"
         "  -o OUTPUT, --output OUTPUT\n"
-        "                        Corrected fasta file\n"
+        "                        Corrected fasta file (*.fasta)\n"
         "  -p PERCENT, --percent PERCENT\n"
-        "                        Percent of the map to saturate, default is 0.95\n"
+        "                        Percent of the map to saturate (default: 0.95)\n"
         "  -s SENSITIVE, --sensitive SENSITIVE\n"
-        "                        sensitivity to depletion score, default is 0.5\n"
-        "  -q MAPQ, --mapq MAPQ  MAPQ of mapping lower bound, default is 1\n"
-        "  -w WIDE, --wide WIDE  Resolution for first pass search of mismatches, default is 25000 bp\n"
+        "                        sensitivity to depletion score (default: 0.5)\n"
+        "  -q MAPQ, --mapq MAPQ  MAPQ of mapping lower bound (default: 1)\n"
+        "  -w WIDE, --wide WIDE  Resolution for first pass search of mismatches (default: 25000)\n"
         "  -n NARROW, --narrow NARROW\n"
-        "                        Resolution for the precise mismatch localizaton, n<w default is 1000 bp\n"
+        "                        Resolution for the precise mismatch localizaton, n<w (default: 1000)\n"
         "  -d DEPLETION, --depletion DEPLETION\n"
-        "                        The size of the region to aggregate the depletion score in the wide path, d >= 2*w, default is 100000 bp\n"
+        "                        The size of the region to aggregate the depletion score in the wide path, d >= 2*w, (default: 100000)\n"
         "  -t THREADS, --threads THREADS\n"
-        "                        Threads, default is 1\n", prog_name);
+        "                        Number of threads (default: 1)\n", prog_name);
     exit(0);
 }
 

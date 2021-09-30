@@ -23,4 +23,4 @@ add_executable(correction
     src/hp_fasta_parser.cpp
     src/main.cpp
 )
-target_link_libraries(correction pthread)
+target_link_libraries(correction pthread deflate)

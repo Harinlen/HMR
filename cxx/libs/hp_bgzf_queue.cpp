@@ -4,7 +4,7 @@ void bgzf_push_queue(BGZF_QUEUE *q, const BGZF_DATA_SLICE &buffer)
 {
     //Lock the queue first.
     std::unique_lock<std::mutex> queue_lock(q->mutex);
-    q->push_cv.wait(queue_lock, [q]{return q->queue.size() < 4;});
+    q->push_cv.wait(queue_lock, [q]{return q->queue.size() < 16;});
     //Push the buffer to the end of the queue.
     q->queue.push_back(buffer);
     //Notify the queue.
