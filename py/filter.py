@@ -14,7 +14,7 @@ def parse_arguments():
     parser.add_argument('-r', '--reference', dest='reference', type=str, required=True, help='Reference genome (.fasta)')
     parser.add_argument('-e', '--enzyme', dest='enzyme', type=str, required=True, help='Enzyme to find in the sequence (ACTG sequence or HindIII, NCOI, DPN1, MBOI)')
     parser.add_argument('-o', '--output', dest='output', type=str, required=True, help='Filtered BAM file (.bam)')
-    parser.add_argument("-q", "--mapq", dest='mapq', type=int, default=40, help="MAPQ of mapping lower bound, default is 40")
+    parser.add_argument("-q", "--mapq", dest='mapq', type=int, default=40, help="MAPQ of mapping lower bound (default: 40)")
     parser.add_argument('-t', '--threads', dest='threads', type=int, default=1, help='Number of threads (default: 1)')
     parser.add_argument('--with-bwa', dest='bwa', type=str, default='', help='Specify the bwa binary path')
     parser.add_argument('--with-sam', '--with-samtools', dest='sam', type=str, default='', help='Specify the samtools binary path')
