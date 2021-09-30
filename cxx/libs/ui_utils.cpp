@@ -39,3 +39,10 @@ void time_print_size(const char *log_msg, size_t size_data)
     sprintf(buf, log_msg, size_data);
     time_print(buf);
 }
+
+void time_print_counter(const char *log_msg, size_t counter, size_t total)
+{
+    char buf[1024];
+    sprintf(buf, log_msg, counter, total);
+    time_print(buf);
+}

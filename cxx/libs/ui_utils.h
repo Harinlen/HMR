@@ -23,4 +23,6 @@ void time_print_file(const char *log_msg, const char *file_path);
 
 void time_print_size(const char *log_msg, size_t size_data);
 
+void time_print_counter(const char *log_msg, size_t counter, size_t total);
+
 #endif // UI_UTILS_H

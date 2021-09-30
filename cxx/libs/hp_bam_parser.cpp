@@ -47,8 +47,10 @@ void bam_parse_align(char *data, size_t data_size, BAM_PARSE_FSM *fsm,
         }
         //Copy the data to target position.
         memcpy(fsm->r + fsm->r_size, data, data_size);
-        //Reassign the data to residual data.
+        //Update the BAM data pointer.
         data = fsm->r;
+        bam_data = fsm->r;
+        bam_data_size += fsm->r_size;
     }
     //Keep parsing while FSM breaks.
     bool keep_parsing = true;
@@ -93,7 +95,7 @@ void bam_parse_align(char *data, size_t data_size, BAM_PARSE_FSM *fsm,
                 size_t ref_info_size = sizeof(BAM_REF_NAME) + ref_name->l_name + sizeof(uint32_t);
                 if(bam_data_size < ref_info_size) {keep_parsing = false; break;}
                 //Call the callback.
-                if(ref_info_callback) { ref_info_callback(fsm->ref_idx, ref_name, *(reinterpret_cast<uint32_t *>(bam_data + ref_name->l_name)), user); }
+                if(ref_info_callback) { ref_info_callback(fsm->ref_idx, ref_name, *(reinterpret_cast<uint32_t *>(bam_data + sizeof(uint32_t) + ref_name->l_name)), user); }
                 //To the next reference information.
                 bam_data += ref_info_size; fsm->offset += ref_info_size; bam_data_size -= ref_info_size;
                 //Increase the index.

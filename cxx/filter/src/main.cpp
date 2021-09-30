@@ -52,13 +52,21 @@ int main(int argc, char *argv[])
         thread_bgzf_parsing.join();
     }
     time_print("Mapping file filter completed.");
+    time_print_counter("Filtered %lu/%lu from the BAM file.", bam_filter.writing_queue.size(), bam_filter.total);
     time_print("Sorting the Align information...");
-    std::vector<size_t> writing_vector(bam_filter.writing_queue.begin(),
-                                       bam_filter.writing_queue.end());
-    std::sort(writing_vector.begin(), writing_vector.end());
+    size_t writing_idx = 0, writing_counts = bam_filter.writing_queue.size();
+    size_t *writing_vector = static_cast<size_t *>(malloc(writing_counts * sizeof(size_t)));
+    for(auto i=bam_filter.writing_queue.begin(); i!=bam_filter.writing_queue.end(); ++i, ++writing_idx)
+    {
+        writing_vector[writing_idx] = *i;
+    }
+    bam_filter.writing_queue = std::list<size_t>();
+    std::sort(writing_vector, writing_vector + writing_counts);
     //Initial the reduced BAM composer.
     compose_init(&reduced_composer, opts.output);
-    reduced_composer.align_offsets = &writing_vector;
+    reduced_composer.align_offsets = writing_vector;
+    reduced_composer.align_offsets_counts = writing_counts;
+    reduced_composer.align_offsets_idx = 0;
     time_print_file("Composing the reduced bam file to %s", opts.output);
     {
         bgzf_slice_queue.finish = false;

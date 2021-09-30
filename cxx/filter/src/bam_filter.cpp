@@ -44,9 +44,10 @@ void bam_filter_n_ref(uint32_t n_ref, void *user)
     BAM_FILTER_USER *filter_data = static_cast<BAM_FILTER_USER *>(user);
     //Prepare the mapper array.
     filter_data->enzyme_idx = static_cast<int32_t *>(malloc(n_ref * sizeof(int32_t)));
+    filter_data->total = 0;
 }
 
-void bam_filter_ref_info(uint32_t ref_idx, BAM_REF_NAME *ref_name, uint32_t, void *user)
+void bam_filter_ref_info(uint32_t ref_idx, BAM_REF_NAME *ref_name, uint32_t l_ref, void *user)
 {
     BAM_FILTER_USER *filter_data = static_cast<BAM_FILTER_USER *>(user);
     //Save the name.
@@ -58,6 +59,7 @@ void bam_filter_ref_info(uint32_t ref_idx, BAM_REF_NAME *ref_name, uint32_t, voi
 void bam_filter_align(size_t offset, BAM_ALIGN *align, void *user)
 {
     BAM_FILTER_USER *filter_data = static_cast<BAM_FILTER_USER *>(user);
+    ++filter_data->total;
     auto enzyme_info = filter_data->enzyme_info;
     //Filter the align.
     if(align->mapq < filter_data->mapq)
@@ -84,14 +86,15 @@ void bam_filter_align(size_t offset, BAM_ALIGN *align, void *user)
     {
         //Check whether it is cross reference.
         auto record_info = pending_iter->second;
-        if(record_info.refID == align->next_refID && record_info.next_refID == align->refID &&
+        if(record_info.refID != -1 &&  // This record is already used.
+                record_info.refID == align->next_refID && record_info.next_refID == align->refID && //Cross reference.
                 record_info.pos == align->next_pos && record_info.next_pos == align->pos)
         {
             //It is a pair, we pop it out, and send to writing list.
             filter_data->writing_queue.push_back(record_info.offset);
             filter_data->writing_queue.push_back(offset);
-            //Pop the record out from the map.
-            filter_data->pending_map.erase(pending_iter);
+            //Assign the reference ID to be -1.
+            pending_iter->second.refID = -1;
         }
     }
 }

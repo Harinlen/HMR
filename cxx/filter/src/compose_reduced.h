@@ -12,8 +12,10 @@ typedef struct BGZF_COMPOSER
     size_t data_size;
     char *compress;
     uint32_t n_ref;
-    std::vector<size_t> *align_offsets;
+    size_t *align_offsets;
+    size_t align_offsets_counts, align_offsets_idx;
     FILE *fp;
+    char *fp_buffer;
 } BGZF_COMPOSER;
 
 typedef struct BAM_REF_NAME BAM_REF_NAME;

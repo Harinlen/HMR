@@ -60,7 +60,7 @@ public:
     }
 
     std::atomic<bool> paused {false};
-    ui32 sleep_duration = 100;
+    ui32 sleep_duration = 1000;
 
 private:
     ui32 get_tasks_running() const

@@ -10,6 +10,7 @@
 
 #include "compose_reduced.h"
 
+#define FILE_IO_BUFFER      (268435456) // 256MB
 #define MAX_BUFFER_SIZE     (65280)
 static uint8_t g_magic[18] = {
     0x1F,       //ID1
@@ -94,6 +95,8 @@ void compose_init(BGZF_COMPOSER *composer, const char *file_path)
     composer->compress = static_cast<char *>(malloc(MAX_BUFFER_SIZE << 1));
     //Write the BAM header.
     composer->fp = fopen(file_path, "wb");
+    composer->fp_buffer = static_cast<char *>(malloc(FILE_IO_BUFFER));
+    setvbuf(composer->fp, composer->fp_buffer, _IOFBF, FILE_IO_BUFFER);
     //Write the magic char.
     cwrite(magic, 4, composer);
 }
@@ -104,7 +107,6 @@ void compose_reduced_header(const char *text, uint32_t l_text, void *user)
     //Write the header size.
     cwrite(reinterpret_cast<char *>(&l_text), sizeof(uint32_t), composer);
     cwrite(text, l_text, composer);
-    cflush(composer);
 }
 
 void compose_n_ref(uint32_t n_ref, void *user)
@@ -143,8 +145,12 @@ void compose_align_info(size_t offset, BAM_ALIGN *align, void *user)
 {
     BGZF_COMPOSER *composer = static_cast<BGZF_COMPOSER *>(user);
     //Check whether the offset appears in the vector or not.
-    if(!std::binary_search(composer->align_offsets->begin(), composer->align_offsets->end(), offset))
-        return;
-    //Write the content to composer.
-    cwrite(reinterpret_cast<char *>(align), align->block_size + sizeof(uint32_t), composer);
+    if(composer->align_offsets_idx < composer->align_offsets_counts &&
+            composer->align_offsets[composer->align_offsets_idx] == offset)
+    {
+        //Write the content to composer.
+        cwrite(reinterpret_cast<char *>(align), align->block_size + sizeof(uint32_t), composer);
+        //Increase the index.
+        ++composer->align_offsets_idx;
+    }
 }
