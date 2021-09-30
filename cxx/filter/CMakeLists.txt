@@ -27,4 +27,4 @@ add_executable(filter
     ../libs/hp_bgzf_queue.cpp
     ../libs/hp_file_map.cpp
 )
-target_link_libraries(filter pthread)
+target_link_libraries(filter pthread deflate)

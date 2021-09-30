@@ -33,16 +33,16 @@ void help_exit(char *prog_name)
         "optional arguments:\n"
         "  -h, --help            show this help message and exit\n"
         "  -m MAPPING, --mapping MAPPING\n"
-        "                        Input mapping file\n"
+        "                        Input mapping file (*.bam)\n"
         "  -r REFERENCE, --reference REFERENCE\n"
-        "                        Contig fasta file\n"
-        "  -q MAPQ, --mapq MAPQ  MAPQ of mapping lower bound, default is 40\n"
+        "                        Contig fasta file (*.fasta)\n"
         "  -e ENZYME, --enzyme ENZYME\n"
         "                        Enzyme to find in the sequence\n"
         "  -o OUTPUT, --output OUTPUT\n"
-        "                        Corrected fasta file\n"
+        "                        Filtered mapping file (*.bam)\n"
+        "  -q MAPQ, --mapq MAPQ  MAPQ of mapping lower bound (default: 40)\n"
         "  -t THREADS, --threads THREADS\n"
-        "                        Threads, default is 1\n", prog_name);
+        "                        Number of threads (default: 1)\n", prog_name);
     exit(0);
 }
 

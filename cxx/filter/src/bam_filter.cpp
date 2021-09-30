@@ -6,7 +6,7 @@
 
 #include "bam_filter.h"
 
-int index_of(char **names, size_t n_ref, const char *name, size_t name_size)
+inline int index_of(char **names, size_t n_ref, const char *name, size_t name_size)
 {
     for(size_t i=0; i<n_ref; ++i)
     {
@@ -25,7 +25,7 @@ inline int in_range(const ENZYME_RANGE &range, int32_t pos)
     return 0;
 }
 
-bool in_enzyme_range(const ENZYME_RANGES &range, int32_t pos)
+inline bool in_enzyme_range(const ENZYME_RANGES &range, int32_t pos)
 {
     int s = 0, e = range.size(), m;
     while(s < e)

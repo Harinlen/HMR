@@ -1,3 +1,5 @@
+#include <cstdio>
+
 #include "hp_bgzf_queue.h"
 
 void bgzf_push_queue(BGZF_QUEUE *q, const BGZF_DATA_SLICE &buffer)

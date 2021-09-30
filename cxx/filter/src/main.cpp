@@ -11,7 +11,6 @@
 #include "hp_bgzf_parser.h"
 #include "hp_bgzf_queue.h"
 #include "hp_bam_parser.h"
-#include "hp_zip_crc32.h"
 
 #include "bam_filter.h"
 #include "compose_reduced.h"
@@ -58,7 +57,6 @@ int main(int argc, char *argv[])
                                        bam_filter.writing_queue.end());
     std::sort(writing_vector.begin(), writing_vector.end());
     //Initial the reduced BAM composer.
-    make_crc_table();
     compose_init(&reduced_composer, opts.output);
     reduced_composer.align_offsets = &writing_vector;
     time_print_file("Composing the reduced bam file to %s", opts.output);

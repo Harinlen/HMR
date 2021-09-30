@@ -104,6 +104,7 @@ void compose_reduced_header(const char *text, uint32_t l_text, void *user)
     //Write the header size.
     cwrite(reinterpret_cast<char *>(&l_text), sizeof(uint32_t), composer);
     cwrite(text, l_text, composer);
+    cflush(composer);
 }
 
 void compose_n_ref(uint32_t n_ref, void *user)

@@ -57,7 +57,7 @@ void pipeline_bgzf_parser(const char *bam_path, const int threads, BGZF_QUEUE *q
     std::list<BGZF_BLOCK> works;
     char *bam_pos = bam_data;
     const char *bam_end = bam_data + bam_data_size;
-    size_t extract_threshold = static_cast<size_t>(threads) * 64, part_size = 0;
+    size_t extract_threshold = static_cast<size_t>(threads) * 128, part_size = 0;
     WORK_THREADS decompress_pool(decompress_field, threads);
     while(bam_pos < bam_end)
     {
