@@ -15,7 +15,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='HMR Partition')
     parser.add_argument('-n', '--nodes', dest='nodes', type=str, required=True, help='Enzyme count result (.fasta.enz_count)')
     parser.add_argument('-e', '--edges', dest='edges', type=str, required=True, help='HiC pair count result (.bam.edge)')
-    parser.add_argument("-o", "--output", dest='output', type=str, required=True, help="Partition group files (.txt)")
+    parser.add_argument("-o", "--output", dest='output', type=str, required=True, help="Partition group files")
     parser.add_argument("-g", "--groups", dest='groups', type=int, required=True, help="Number of groups")
     parser.add_argument("-m", "--memory", dest='memory', type=int, default=8, help="Memory for Java virtual machine in GiB (default: 8)")
     parser.add_argument("-c", "--change-per-node", dest='change_per_node', type=float, default=2.0, help="Target distance change per node before stop the algorithm (default: 2.0)")
