@@ -26,6 +26,22 @@ typedef struct ENZYME_PARSE
 
 typedef thread_pool<void (const ENZYME_PARSE &), ENZYME_PARSE> WORK_THREADS;
 
+void fasta_dump_count(const char *file_path, FASTA_ENZYME *enzyme_pos)
+{
+    FILE *count_file = fopen(file_path, "w");
+    //Loop and write the file.
+    fprintf(count_file, "%zu\n", enzyme_pos->n_ref);
+    for(size_t i=0; i<enzyme_pos->n_ref; ++i)
+    {
+        //Write the name.
+        fprintf(count_file, "%s\t%zu\t%zu\n",
+                enzyme_pos->ref_name[i],
+                enzyme_pos->ranges[i].size(),
+                enzyme_pos->ref_length[i]);
+    }
+    fclose(count_file);
+}
+
 void fasta_search_in_seq(const ENZYME_PARSE &param)
 {
     std::list<int32_t> poses;
@@ -59,6 +75,7 @@ void fasta_search_in_seq(const ENZYME_PARSE &param)
             else { pos_range.push_back(std::pair<int32_t, int32_t>(i - 500, i + 500)); }
         }
         param.pos->ranges.push_back(pos_range);
+        param.pos->ref_length.push_back(param.seq_size);
     }
     //Clear the sequence.
     free(param.seq_name);
@@ -120,6 +137,7 @@ void fasta_search_enzyme(const char *file_path, FASTA_ENZYME *enzyme_pos)
     WORK_THREADS work_pool(fasta_search_in_seq);
     //Loop and process the data.
     enzyme_pos->n_ref = 0;
+    enzyme_pos->ref_name = NULL;
     size_t start_pos = 0;
     for(size_t i=0; i<fasta_size; ++i)
     {

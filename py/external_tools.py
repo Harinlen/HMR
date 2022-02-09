@@ -21,7 +21,7 @@ def fetch_binary(exe_name: str, exe_path: str = ''):
 
 def run_program(exe_path: str, arguments: list, block: bool, stdin, stdout):
     if block:
-        subprocess.run([exe_path, *arguments])
+        return subprocess.run([exe_path, *arguments]).returncode
     else:
         return subprocess.Popen([exe_path, *arguments],
                                 stdin=stdin,
@@ -48,7 +48,7 @@ def samtools(arguments: list, exe_path: str = '', block: bool = False, stdin=Non
 
 
 def hmr_tool(mod_name: str, arguments: list):
-    run_program(fetch_binary('hmr-{}'.format(mod_name)), arguments, True, None, None)
+    return run_program(fetch_binary('hmr-{}'.format(mod_name)), arguments, True, None, None)
 
 
 def stage(program_method, *args, **kwargs):

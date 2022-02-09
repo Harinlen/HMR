@@ -3,6 +3,7 @@
 
 typedef struct FASTA_ENZYME FASTA_ENZYME;
 
+void fasta_dump_count(const char *file_path, FASTA_ENZYME *enzyme_pos);
 void fasta_search_enzyme(const char *file_path, FASTA_ENZYME *enzyme_pos);
 
 #endif // HP_FASTA_SEARCH_H

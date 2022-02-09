@@ -7,7 +7,8 @@ import importlib.util
 
 hmr_mods = {
     'correct': 'Divided FASTA sequence into smaller parts.',
-    'filter': 'Filter the BAM file.'
+    'filter': 'Filter the BAM file.',
+    'partition': 'Separate contigs into separate clusters.',
 }
 
 

@@ -1,8 +1,12 @@
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 #include "arguments.h"
 #include "ui_utils.h"
+
+static const char enzyme_suffix[] = ".enz_count";
+static const char edge_suffix[] = ".edge";
 
 Argument opts;
 
@@ -69,4 +73,14 @@ void parse_arguments(int argc, char *argv[])
     //Print the data.
     time_print("Execution configuration:");
     time_print_int("\tThreads: %d", opts.threads);
+    //Construct the enzyme output.
+    char *enzyme_output = static_cast<char *>(malloc(strlen(opts.reference)+strlen(enzyme_suffix)));
+    strcpy(enzyme_output, opts.reference);
+    strcat(enzyme_output, enzyme_suffix);
+    opts.enzyme_output = enzyme_output;
+    //Construct the edge output.
+    char *edge_output = static_cast<char *>(malloc(strlen(opts.mapping)+strlen(edge_suffix)));
+    strcpy(edge_output, opts.mapping);
+    strcat(edge_output, edge_suffix);
+    opts.edge_output = edge_output;
 }

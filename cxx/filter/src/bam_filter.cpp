@@ -39,6 +39,32 @@ inline bool in_enzyme_range(const ENZYME_RANGES &range, int32_t pos)
     return false;
 }
 
+void bam_count_edge(BAM_EDGES *edges, int32_t refID, int32_t next_refID)
+{
+    //Use the smaller id as main ID (m_id), the other id as sub ID (s_id).
+    int32_t m_id = refID, s_id = next_refID;
+    if(next_refID < refID)
+    {
+        m_id = next_refID;
+        s_id = refID;
+    }
+    //Construct the id list.
+    uint64_t um_id = static_cast<uint64_t>(m_id), us_id = static_cast<uint64_t>(s_id);
+    uint64_t key = (um_id << 32) | (us_id);
+    //Check the edge exist or not.
+    auto edge_rec = edges->find(key);
+    if(edge_rec == edges->end())
+    {
+        //Failed to find the main id, create a new edge data.
+        edges->insert(std::make_pair(key, 1));
+    }
+    else
+    {
+        //Try to find the record.
+        ++edge_rec->second;
+    }
+}
+
 void bam_filter_n_ref(uint32_t n_ref, void *user)
 {
     BAM_FILTER_USER *filter_data = static_cast<BAM_FILTER_USER *>(user);
@@ -93,8 +119,23 @@ void bam_filter_align(size_t offset, BAM_ALIGN *align, void *user)
             //It is a pair, we pop it out, and send to writing list.
             filter_data->writing_queue.push_back(record_info.offset);
             filter_data->writing_queue.push_back(offset);
+            //Count the record.
+            bam_count_edge(&filter_data->edges, filterIdx, nextFilterIdx);
             //Assign the reference ID to be -1.
             pending_iter->second.refID = -1;
         }
     }
+}
+
+void bam_edge_dump(const char *file_name, BAM_FILTER_USER *user)
+{
+    //Open the file and write the content.
+    FILE *edge_file = fopen(file_name, "wb");
+    auto edges = user->edges;
+    for(auto i=edges.begin(); i!=edges.end(); ++i)
+    {
+        fwrite(&i->first, sizeof(uint64_t), 1, edge_file);
+        fwrite(&i->second, sizeof(uint64_t), 1, edge_file);
+    }
+    fclose(edge_file);
 }

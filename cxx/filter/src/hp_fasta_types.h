@@ -11,6 +11,7 @@ typedef struct FASTA_ENZYME
 {
     size_t n_ref;
     char **ref_name;
+    std::vector<size_t> ref_length;
     std::vector<ENZYME_RANGES> ranges;
 } FASTA_ENZYME;
 

@@ -30,10 +30,12 @@ int main(int argc, char *argv[])
     check_enzyme(opts.enzyme, &nuc_seq, &nuc_seq_size);
     //Start to search enzyme position in FASTA seq.
     FASTA_ENZYME enzyme_pos;
-    enzyme_pos.ref_name = NULL;
     time_print_file("Building enzyme index in %s", opts.reference);
     fasta_search_enzyme(opts.reference, &enzyme_pos);
     time_print_size("Enzyme index built, total sequenece: %d", enzyme_pos.n_ref);
+    //Output the enzyme result.
+    time_print_file("Writing enzyme counting result to %s", opts.enzyme_output);
+    fasta_dump_count(opts.enzyme_output, &enzyme_pos);
     bam_filter.enzyme_info = &enzyme_pos;
     //Now start parsing the BAM file.
     time_print_file("Filtering mapping file %s", opts.mapping);
@@ -52,6 +54,8 @@ int main(int argc, char *argv[])
         thread_bgzf_parsing.join();
     }
     time_print("Mapping file filter completed.");
+    //Write the edge file.
+    bam_edge_dump(opts.edge_output, &bam_filter);
     time_print_counter("Filtered %lu/%lu from the BAM file.", bam_filter.writing_queue.size(), bam_filter.total);
     time_print("Sorting the Align information...");
     size_t writing_idx = 0, writing_counts = bam_filter.writing_queue.size();

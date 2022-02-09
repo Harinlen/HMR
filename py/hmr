@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Get the hmr path, check whether it is the symbolic link.
+HMR_PATH=`realpath "$0"`
+# Extract the dirname.
+DIR_PATH="$(dirname $HMR_PATH)"
+BOOTSTRAP_PATH="$DIR_PATH/bootstrap.py"
+# Run the python.
+python3 $BOOTSTRAP_PATH $@
+
