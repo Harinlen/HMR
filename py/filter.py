@@ -28,7 +28,6 @@ def hmr_main():
     skip_bwa = False
     if os.path.isfile(args.bam):
         skip_bwa = True
-        sorted_bam_path = os.path.abspath(args.bam)
     else:
         if not os.path.isfile(args.r1):
             error_exit('R1 reads file does not exist:\n{}'.format(args.r1))
@@ -45,7 +44,10 @@ def hmr_main():
         output_dir = os.path.abspath(os.curdir)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir, exist_ok=True)
-    if not skip_bwa:
+    if skip_bwa:
+        # Directly use the sorted bam path.
+        sorted_bam_path = os.path.abspath(args.bam)
+    else:
         # Convert the absolute path.
         args.r1 = os.path.abspath(args.r1)
         args.r2 = os.path.abspath(args.r2)
@@ -67,10 +69,12 @@ def hmr_main():
                                      os.path.join(output_dir, 'tmp.ali')], args.sam)])
         # Wait for pipeline complete.
         mapping_proc.wait()
-        time_print('Filtering the BAM file')
+    # Run the bam filter.
+    time_print('Filtering the BAM file')
     # Use HMR filter to find the paired reads in BAM.
-    ext.hmr_tool('filter', ['-m', sorted_bam_path, '-r', args.reference, '-o', args.output, '-e', args.enzyme,
-                            '-q', str(args.mapq), '-t', str(args.threads)])
+    if ext.hmr_tool('filter', ['-m', sorted_bam_path, '-r', args.reference, '-o', args.output, '-e', args.enzyme,
+                               '-q', str(args.mapq), '-t', str(args.threads)]) != 1:
+        return 1
     # Remove the sorted.bam and tmp.ali
     time_print('Cleaning up the temporary files')
     pass
