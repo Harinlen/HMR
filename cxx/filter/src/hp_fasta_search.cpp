@@ -6,7 +6,6 @@
 #include "arguments.h"
 #include "hp_fasta_types.h"
 #include "hp_thread_pool.h"
-#include "hp_file_map.h"
 
 #include "hp_fasta_search.h"
 
@@ -25,6 +24,19 @@ typedef struct ENZYME_PARSE
 } ENZYME_PARSE;
 
 typedef thread_pool<void (const ENZYME_PARSE &), ENZYME_PARSE> WORK_THREADS;
+
+inline bool is_space(char c)
+{
+    return c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r' ||  c == ' ';
+}
+
+inline void trimmed_right(char *buf, size_t &size)
+{
+    while(size > 0 && is_space(buf[size-1]))
+    {
+        buf[size--] = '\0';
+    }
+}
 
 void fasta_dump_count(const char *file_path, FASTA_ENZYME *enzyme_pos)
 {
@@ -128,26 +140,22 @@ void fasta_parse_line(char *line, size_t line_size, FASTA_ENZYME *enzyme_pos, WO
 
 void fasta_search_enzyme(const char *file_path, FASTA_ENZYME *enzyme_pos)
 {
-    char *fasta_data;
-    size_t fasta_size;
-#ifdef HP_FASTA_MMAP
-    int fd = map_file(file_path, &fasta_data, &fasta_size);
-#endif
+    //Keep reading the file.
+    FILE *fasta_file = fopen(file_path, "r");
     //Prepare the process pool.
     WORK_THREADS work_pool(fasta_search_in_seq);
     //Loop and process the data.
     enzyme_pos->n_ref = 0;
     enzyme_pos->ref_name = NULL;
-    size_t start_pos = 0;
-    for(size_t i=0; i<fasta_size; ++i)
+    //Prepare the line parser.
+    char *line = NULL;
+    size_t len = 0;
+    while(getline(&line, &len, fasta_file) != -1)
     {
-        //Search for the '\n'
-        if(fasta_data[i] == '\n')
-        {
-            //Yield the line.
-            fasta_parse_line(fasta_data+start_pos, i-start_pos, enzyme_pos, &work_pool);
-            start_pos = i+1;
-        }
+        //Trimmed line.
+        trimmed_right(line, len);
+        //Yield the line.
+        fasta_parse_line(line, len, enzyme_pos, &work_pool);
     }
     if(seq_name != NULL)
     {
@@ -161,7 +169,5 @@ void fasta_search_enzyme(const char *file_path, FASTA_ENZYME *enzyme_pos)
         }
     }
     work_pool.wait_for_tasks();
-#ifdef HP_FASTA_MMAP
-    unmap_file(fd, fasta_data, fasta_size);
-#endif
+    fclose(fasta_file);
 }
